@@ -36,6 +36,15 @@ function App() {
   const { search, updateSearch, error } = useSearch();
   const movies = responseMovies.Search;
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+  };
+
+  const handleChange = (event) => {
+    const newSearch = event.target.value;
+    updateSearch(newSearch);
+  };
+
   const mappedMovies = movies.map((movie) => {
     return {
       id: movie.imdbID,
@@ -56,6 +65,7 @@ function App() {
           />
           <button>Buscar</button>
         </form>
+        {error && <p className="error">{error}</p>}
       </header>
       <main>
         <Movies movies={mappedMovies} />

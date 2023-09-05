@@ -1,36 +1,9 @@
-import { useEffect } from "react";
 import "./App.css";
 import { Movies } from "./components/Movies";
 import responseMovies from "./mocks/results.json";
-import { useState } from "react";
-import { useId } from "react";
+import { useSearch } from "./hooks/useSearch";
 
-function useSearch() {
-  const [search, updateSearch] = useState("");
-  const [error, setError] = useState(false);
-  const isFirstInput = useId(true);
 
-  useEffect(() => {
-    if (isFirstInput.current) {
-      isFirstInput.current = search === "";
-      return;
-    }
-
-    if (search === "") {
-      setError("La búsqueda no puede estar vacía");
-      return;
-    }
-
-    if (search.length < 3) {
-      setError("La búsqueda debe tener al menos 3 caracteres");
-      return;
-    }
-
-    setError(false);
-  }, [search, isFirstInput]);
-
-  return { search, updateSearch, error };
-}
 
 function App() {
   const { search, updateSearch, error } = useSearch();
@@ -58,8 +31,10 @@ function App() {
     <div className="page">
       <header>
         <h1>Buscador de películas</h1>
-        <form className="form">
+        <form onSubmit={handleSubmit} className="form">
           <input
+            value={search}
+            onChange={handleChange}
             type="text"
             placeholder="Introduce el nombre de una película"
           />

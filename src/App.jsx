@@ -1,36 +1,13 @@
 import "./App.css";
 import { Movies } from "./components/Movies";
 import { useSearch } from "./hooks/useSearch";
-import { useCallback, useRef, useState } from "react";
-import { searchMovies } from "./services/movies";
-
-function useMovies({ search }) {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const previousSearch = useRef(search);
-
-  const getMovies = useCallback(async () => {
-    if (search === previousSearch.current) return;
-    try {
-      setLoading(true);
-      setError(null);
-      previousSearch.current = search;
-      const movies = await searchMovies({ search });
-      setMovies(movies);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [search]);
-
-  return { movies, loading, error, getMovies };
-}
+import { useMovies } from "./hooks/useMovies";
+import { useState } from "react";
 
 function App() {
+  const [sort, setSort] = useState("");
   const { search, updateSearch, error } = useSearch();
-  const { movies, loading, getMovies } = useMovies({ search });
+  const { movies, loading, getMovies } = useMovies({ search, sort });
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -40,6 +17,10 @@ function App() {
   const handleChange = (event) => {
     const newSearch = event.target.value;
     updateSearch(newSearch);
+  };
+
+  const handleSort = () => {
+    setSort(!sort);
   };
 
   return (
@@ -53,13 +34,12 @@ function App() {
             type="text"
             placeholder="Introduce el nombre de una película"
           />
+          <input type="checkbox" onChange={handleSort} checked={sort} />
           <button>Buscar</button>
         </form>
         {error && <p className="error">{error}</p>}
       </header>
-      <main>
-        {loading ? <p>Loading...</p> : <Movies movies={movies} />}
-      </main>
+      <main>{loading ? <p>Loading...</p> : <Movies movies={movies} />}</main>
     </div>
   );
 }

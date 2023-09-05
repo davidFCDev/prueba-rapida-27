@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from "react";
 
-function useSearch() {
+export function useSearch() {
   const [search, updateSearch] = useState("");
   const [error, setError] = useState(false);
   const isFirstInput = useId(true);

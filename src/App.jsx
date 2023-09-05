@@ -1,9 +1,18 @@
 import "./App.css";
+import { Movies } from "./components/Movies";
 import responseMovies from "./mocks/results.json";
 
 function App() {
   const movies = responseMovies.Search;
-  const hasMovies = movies?.length > 0;
+
+  const mappedMovies = movies.map((movie) => {
+    return {
+      id: movie.imdbID,
+      title: movie.Title,
+      year: movie.Year,
+      poster: movie.Poster,
+    };
+  });
 
   return (
     <div className="page">
@@ -18,18 +27,7 @@ function App() {
         </form>
       </header>
       <main>
-        {hasMovies ? (
-          <ul className="movies">
-            {movies.map((movie) => (
-              <li key={movie.imdbID}>
-                <h2>{movie.Title}</h2>
-                <img src={movie.Poster} alt={movie.Title} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No hay películas</p>
-        )}
+        <Movies movies={mappedMovies} />
       </main>
     </div>
   );
